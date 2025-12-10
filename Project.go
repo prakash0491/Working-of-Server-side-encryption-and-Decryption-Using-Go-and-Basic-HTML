@@ -1,9 +1,29 @@
+// package main
+
+// import (
+// 	"fmt"
+// 	"html/template"
+// 	"net/http"
+// 	"golang.org/x/crypto/bcrypt"
+// )
+
+// var tpl *template.Template
+
+// func main() {
+
+// 	tpl, _ = template.ParseGlob("templates/*.html")
+// 	http.HandleFunc("/login", loginHandler)
+// 	http.HandleFunc("/loginauth", loginAuthHandler)
+//     http.HandleFunc("/description", descriptionHandler)
+// 	http.ListenAndServe("localhost:8000", nil)
+// }
 package main
 
 import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -12,11 +32,20 @@ var tpl *template.Template
 func main() {
 
 	tpl, _ = template.ParseGlob("templates/*.html")
+
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/loginauth", loginAuthHandler)
-    http.HandleFunc("/description", descriptionHandler)
-	http.ListenAndServe("localhost:8000", nil)
+	http.HandleFunc("/description", descriptionHandler)
+
+	// ----------- FIX FOR RENDER ---------------
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "10000"
+	}
+	fmt.Println("Server running on port:", port)
+	http.ListenAndServe(":"+port, nil)
 }
+
 
 func loginHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("*****loginHandler running*****")
@@ -108,5 +137,6 @@ var description string
         description = "No book found"
     }
     fmt.Fprintf(w, description)
+
 
 }
